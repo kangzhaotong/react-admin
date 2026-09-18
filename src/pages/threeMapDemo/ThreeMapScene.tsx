@@ -4,7 +4,7 @@
  * @Last Modified by: M78.Kangzhaotong
  * @Last Modified time: 2024-04-28 14:42:10
  */
-import React, { useRef, useEffect, useState, MutableRefObject } from 'react';
+import { useRef, useEffect, useState, MutableRefObject } from 'react';
 import { Button } from 'antd';
 import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
 import * as THREE from 'three';
@@ -31,7 +31,6 @@ import circle2 from '@/assets/images/map-circle-2.png';
 import circle3 from '@/assets/images/map-circle-3.png';
 import chinaSatellite from '@/assets/images/china-satellite.jpg';
 import { pxfix } from './config';
-import { useDebounce } from '@/utils/utils';
 import styles from './index.module.less';
 
 let width = 0;
@@ -217,8 +216,8 @@ const applyTerrainRelief = (
 const smoothTerrainGeometry = (geometry: THREE.BufferGeometry) => {
   geometry.deleteAttribute('normal');
   geometry.deleteAttribute('uv');
-  const smoothedGeometry = mergeVertices(geometry, 0.005);
-  smoothedGeometry.computeVertexNormals(true);
+  const smoothedGeometry = geometry.toNonIndexed();
+  smoothedGeometry.computeVertexNormals();
   smoothedGeometry.computeBoundingBox();
   smoothedGeometry.computeBoundingSphere();
   return smoothedGeometry;
