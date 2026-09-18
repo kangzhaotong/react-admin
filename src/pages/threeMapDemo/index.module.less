@@ -60,26 +60,63 @@
     }
 }
 
+@keyframes satelliteDrift {
+    0% {
+        opacity: 0.48;
+        transform: translate3d(-0.6%, -0.4%, 0) scale(1.015);
+    }
+
+    100% {
+        opacity: 0.78;
+        transform: translate3d(0.6%, 0.4%, 0) scale(1.035);
+    }
+}
+
+@keyframes ambientPulse {
+    0%, 100% {
+        opacity: 0.58;
+        transform: translateX(-50%) scale(0.96);
+    }
+
+    50% {
+        opacity: 0.88;
+        transform: translateX(-50%) scale(1.04);
+    }
+}
+
+@keyframes mapReveal {
+    from {
+        opacity: 0;
+        filter: saturate(0.72) blur(3px);
+    }
+
+    to {
+        opacity: 1;
+        filter: saturate(1) blur(0);
+    }
+}
+
 
 .mapWrap {
-    height: 100%;
-    min-height: 100vh;
+    height: calc(100vh - 120px);
+    min-height: 620px;
     position: relative;
     overflow: hidden;
     background:
-        radial-gradient(circle at 50% 58%, rgba(59, 184, 255, 0.2) 0, rgba(59, 184, 255, 0.08) 22%, rgba(10, 22, 35, 0) 52%),
-        radial-gradient(circle at 50% -8%, rgba(123, 223, 255, 0.2) 0, rgba(123, 223, 255, 0.06) 26%, rgba(8, 18, 31, 0) 58%),
-        linear-gradient(180deg, #0f2740 0%, #0a1a2c 42%, #081320 100%);
+        radial-gradient(circle at 50% 58%, rgba(63, 139, 119, 0.22) 0, rgba(28, 88, 78, 0.1) 24%, rgba(7, 25, 31, 0) 54%),
+        radial-gradient(circle at 50% -8%, rgba(170, 195, 176, 0.16) 0, rgba(90, 133, 125, 0.06) 28%, rgba(6, 22, 29, 0) 60%),
+        linear-gradient(180deg, #102c35 0%, #0a222b 44%, #06171e 100%);
 
     &::before {
         content: '';
         position: absolute;
         inset: 0;
         background:
-            linear-gradient(90deg, rgba(72, 173, 255, 0.12) 0%, rgba(72, 173, 255, 0) 12%, rgba(72, 173, 255, 0) 88%, rgba(72, 173, 255, 0.12) 100%),
-            linear-gradient(180deg, rgba(176, 240, 255, 0.08) 0%, rgba(176, 240, 255, 0) 18%, rgba(176, 240, 255, 0) 82%, rgba(176, 240, 255, 0.06) 100%);
+            linear-gradient(90deg, rgba(86, 153, 136, 0.1) 0%, rgba(86, 153, 136, 0) 12%, rgba(86, 153, 136, 0) 88%, rgba(86, 153, 136, 0.1) 100%),
+            linear-gradient(180deg, rgba(203, 221, 207, 0.07) 0%, rgba(203, 221, 207, 0) 18%, rgba(203, 221, 207, 0) 82%, rgba(97, 168, 151, 0.05) 100%);
         pointer-events: none;
         z-index: 0;
+        animation: satelliteDrift 16s ease-in-out infinite alternate;
     }
 
     &::after {
@@ -91,10 +128,11 @@
         width: 72vw;
         height: 30vh;
         border-radius: 50%;
-        background: radial-gradient(circle, rgba(78, 205, 255, 0.28) 0%, rgba(78, 205, 255, 0.1) 34%, rgba(78, 205, 255, 0) 72%);
+        background: radial-gradient(circle, rgba(58, 148, 128, 0.26) 0%, rgba(58, 148, 128, 0.09) 34%, rgba(58, 148, 128, 0) 72%);
         filter: blur(28px);
         pointer-events: none;
         z-index: 0;
+        animation: ambientPulse 7s ease-in-out infinite;
     }
 
     .mapLoading {
@@ -225,8 +263,92 @@
 
     .tabsBottom {
         top: auto;
-        .pxfixW(bottom, 60px);
-        .pxfixW(left, 1120px);
+        bottom: 24px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 8px;
+        border: 1px solid rgba(163, 230, 205, 0.2);
+        border-radius: 16px;
+        background: rgba(5, 29, 31, 0.52);
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
+        backdrop-filter: blur(14px);
+    }
+
+    .controlButton {
+        color: rgba(235, 250, 238, 0.9) !important;
+        border: 1px solid rgba(169, 225, 197, 0.22) !important;
+        border-radius: 10px !important;
+        background: rgba(21, 78, 67, 0.65) !important;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        transition: transform 180ms ease, background 180ms ease, box-shadow 180ms ease;
+
+        &:hover {
+            color: #fff !important;
+            background: rgba(56, 133, 102, 0.82) !important;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(27, 104, 76, 0.24);
+        }
+    }
+
+    .zoomControls {
+        position: absolute;
+        right: 28px;
+        bottom: 24px;
+        z-index: 99;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px;
+        border: 1px solid rgba(163, 230, 205, 0.2);
+        border-radius: 16px;
+        background: rgba(5, 29, 31, 0.52);
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
+        backdrop-filter: blur(14px);
+    }
+
+    .zoomButton {
+        width: 42px;
+        height: 42px;
+        padding: 0 !important;
+        color: #e9fff0 !important;
+        border: 1px solid rgba(169, 225, 197, 0.25) !important;
+        border-radius: 11px !important;
+        background: rgba(21, 78, 67, 0.72) !important;
+        transition: transform 180ms ease, background 180ms ease;
+
+        &:hover {
+            color: #fff !important;
+            background: rgba(56, 133, 102, 0.88) !important;
+            transform: translateY(-2px) scale(1.04);
+        }
+    }
+
+    .zoomStatus {
+        min-width: 66px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        color: rgba(228, 246, 233, 0.62);
+        font-size: 11px;
+        line-height: 1.3;
+        letter-spacing: 0.04em;
+
+        strong {
+            color: #dfffea;
+            font-size: 14px;
+            font-weight: 600;
+        }
+    }
+
+    .mapHint {
+        position: absolute;
+        right: 30px;
+        bottom: 82px;
+        z-index: 99;
+        color: rgba(226, 245, 232, 0.62);
+        font-size: 12px;
+        letter-spacing: 0.04em;
+        pointer-events: none;
     }
 
     .legend {
@@ -265,8 +387,45 @@
         position: relative;
         z-index: 1;
         isolation: isolate;
+        animation: mapReveal 1.25s ease-out both;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: inset 0 0 0 1px rgba(175, 232, 209, 0.08), 0 18px 50px rgba(0, 0, 0, 0.18);
 
         :global {
+            .label {
+                pointer-events: none;
+                white-space: nowrap;
+
+                .label-con {
+                    font-size: clamp(11px, 0.85vw, 14px);
+                    line-height: 1.4;
+                    color: #eff7e5;
+                    text-shadow: 0 1px 3px #00140d, 0 0 6px #00140d;
+                }
+            }
+
+            .gdp-label {
+                pointer-events: none;
+                text-align: center;
+                font-weight: 500;
+
+                .gdp-value {
+                    font-size: 13px;
+                    color: #28d0ff;
+                    font-weight: bold;
+                    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9), 0 0 4px rgba(40, 208, 255, 0.4);
+                    letter-spacing: 0.02em;
+                }
+
+                .gdp-province {
+                    font-size: 11px;
+                    color: #b9efff;
+                    margin-top: 2px;
+                    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+                }
+            }
+
             canvas {
                 height: 100%;
                 width: 100%;
@@ -413,9 +572,16 @@
             .label-con {
                 text-align: center;
                 .pxfixW(font-size, 24px);
+                color: rgba(239, 247, 229, 0.88);
+                font-weight: 500;
+                letter-spacing: 0.02em;
+                text-shadow:
+                    0 1px 2px rgba(0, 0, 0, 0.92),
+                    0 0 8px rgba(4, 24, 16, 0.86);
 
                 .value {
-                    display: block
+                    display: block;
+                    color: #bfe3d0;
                 }
             }
         }

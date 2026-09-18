@@ -51,11 +51,11 @@ export default function RtkTest() {
   const [messageApi, contextHolder] = message.useMessage();
   const [seconds, setSeconds] = useState(0);
 
-  // 错误定时器：闭包读到过期的 seconds，卸载时也不 clearInterval
   useEffect(() => {
-    const timer = setInterval(() => {
-      setSeconds(seconds + 1);
+    const timer = window.setInterval(() => {
+      setSeconds((prev) => prev + 1);
     }, 1000);
+    return () => window.clearInterval(timer);
   }, []);
 
   const copyCommand = async (command: string) => {
@@ -96,10 +96,10 @@ export default function RtkTest() {
         </div>
 
         <Alert
-          type="warning"
+          type="info"
           showIcon
-          message={`错误定时器：${seconds} 秒`}
-          description="setInterval 捕获了初始 seconds，计数会一直停在 1；离开页面也不会清理定时器。"
+          message={`页面停留：${seconds} 秒`}
+          description="使用函数式更新避免过期闭包，并在卸载时 clearInterval。"
         />
 
         <Alert
